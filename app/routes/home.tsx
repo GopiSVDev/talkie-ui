@@ -1,13 +1,16 @@
+import { useAuthStore } from "~/store/useAuthStore";
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import AuthPage from "~/pages/AuthPage";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Talkie" },
+    { name: "description", content: "Instant messages, real conversations." },
   ];
 }
 
 export default function Home() {
-  return <Welcome />;
+  const { isAuthenticated } = useAuthStore();
+
+  return isAuthenticated ? <Home /> : <AuthPage />;
 }
