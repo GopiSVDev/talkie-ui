@@ -1,6 +1,6 @@
 import { useAuthStore } from "~/store/useAuthStore";
 import type { Route } from "./+types/home";
-import AuthPage from "~/pages/AuthPage";
+import { Navigate } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -12,5 +12,9 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
   const { isAuthenticated } = useAuthStore();
 
-  return isAuthenticated ? <Home /> : <AuthPage />;
+  if (!isAuthenticated) {
+    return <Navigate to="/auth/login" replace />;
+  }
+
+  return <>LOGGED IN</>;
 }

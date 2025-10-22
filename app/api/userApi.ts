@@ -3,7 +3,7 @@ import axios from "./axiosInstance";
 
 interface RegisterPayload {
   username: string;
-  displayName: string;
+  name: string;
   password: string;
 }
 
@@ -13,15 +13,9 @@ interface LoginPayload {
 }
 
 interface LoginResponse {
-  token: string;
-  user: UserBase;
-}
-
-export interface UpdateProfilePayload {
-  id: string;
-  displayName?: string;
-  avatarUrl?: string;
-  password?: string;
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
 }
 
 export const register = async (
@@ -41,21 +35,21 @@ export const guest = async (): Promise<LoginResponse> => {
   return response.data;
 };
 
-export const updateProfile = async (data: UpdateProfilePayload) => {
-  const response = await axios.post("/user/update", data);
-  return response.data;
-};
+// export const updateProfile = async (data: UpdateProfilePayload) => {
+//   const response = await axios.post("/user/update", data);
+//   return response.data;
+// };
 
-export const deleteProfile = async (id: string) => {
-  await axios.delete(`/user/delete/${id}`);
-};
+// export const deleteProfile = async (id: string) => {
+//   await axios.delete(`/user/delete/${id}`);
+// };
 
-export const searchUsers = async (keyword: string) => {
-  const response = await axios.get(`/user/search/${keyword}`);
-  return response.data;
-};
+// export const searchUsers = async (keyword: string) => {
+//   const response = await axios.get(`/user/search/${keyword}`);
+//   return response.data;
+// };
 
-export const getUser = async (id: string) => {
-  const response = await axios.get(`/user/${id}`);
-  return response.data;
-};
+// export const getUser = async (id: string) => {
+//   const response = await axios.get(`/user/${id}`);
+//   return response.data;
+// };

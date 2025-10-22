@@ -7,15 +7,16 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().token;
+  const accessToken = useAuthStore.getState().accessToken;
+  const expiresAt = useAuthStore.getState().expiresAt;
 
-  if (token) {
-    if (isTokenExpired(token)) {
+  if (accessToken) {
+    if (isTokenExpired(expiresAt)) {
       useAuthStore.getState().logout();
       return Promise.reject(new Error("Token expired"));
     }
 
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
 
   return config;

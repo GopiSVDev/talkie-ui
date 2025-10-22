@@ -6,14 +6,17 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface AuthState {
-  token: string | null;
-  user: UserBase | null;
+  accessToken: string | null;
+  refreshToken: string | null;
+  expiresAt: number | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 
-  setToken: (token: string | null) => void;
-  setUser: (user: UserBase | null) => void;
-  updateUser: (partial: Partial<UserBase>) => void;
+  setTokens: (
+    accessToken: string | null,
+    refreshToken?: string | null,
+    expiresAt?: number | null
+  ) => void;
   logout: (silent?: boolean) => void;
   validateToken: () => boolean;
 }
@@ -21,33 +24,36 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
-      token: null,
-      user: null,
+      accessToken: null,
+      refreshToken: null,
+      expiresAt: null,
       isAuthenticated: false,
       isLoading: false,
 
-      setToken: (token) => {
-        set({ token, isAuthenticated: !!token });
-        if (token) {
-          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      setTokens: (accessToken, refreshToken, expiresAt) => {
+        set({
+          accessToken,
+          refreshToken: refreshToken ?? get().refreshToken,
+          expiresAt: expiresAt ?? get().expiresAt,
+          isAuthenticated: !!accessToken,
+        });
+
+        if (accessToken) {
+          axios.defaults.headers.common["Authorization"] =
+            `Bearer ${accessToken}`;
         } else {
           delete axios.defaults.headers.common["Authorization"];
         }
       },
 
-      setUser: (user) => set({ user }),
-      updateUser: (partial) =>
-        set((state) => ({
-          user: state.user
-            ? {
-                ...state.user,
-                ...partial,
-              }
-            : null,
-        })),
-
       logout: (silent = false) => {
-        set({ token: null, user: null, isAuthenticated: false });
+        set({
+          accessToken: null,
+          refreshToken: null,
+          expiresAt: null,
+          isAuthenticated: false,
+        });
+
         localStorage.removeItem("auth-store");
         delete axios.defaults.headers.common["Authorization"];
 
@@ -58,8 +64,14 @@ export const useAuthStore = create<AuthState>()(
       },
 
       validateToken: () => {
-        const token = get().token;
-        if (!token || isTokenExpired(token)) {
+        const { accessToken, expiresAt } = get();
+
+        if (
+          !accessToken ||
+          !expiresAt ||
+          Date.now() > expiresAt ||
+          isTokenExpired(expiresAt)
+        ) {
           get().logout(true);
           return false;
         }
@@ -69,7 +81,11 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-store",
-      partialize: (state) => ({ token: state.token, user: state.user }),
+      partialize: (state) => ({
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
+        expiresAt: state.expiresAt,
+      }),
     }
   )
 );

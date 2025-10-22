@@ -1,9 +1,9 @@
-import AuthTabs from "~/components/Auth/AuthTabs";
 import { Loader } from "lucide-react";
 import { useEffect } from "react";
+import AuthTabs from "~/components/auth/AuthTabs";
 import { useAuthStore } from "~/store/useAuthStore";
 
-const AuthPage = () => {
+const AuthLayout = () => {
   useEffect(() => {
     localStorage.setItem("vite-ui-theme", "dark");
     document.documentElement.classList.add("dark");
@@ -16,7 +16,7 @@ const AuthPage = () => {
       <div className="mt-3">
         <img src="/logo.svg" className="w-[100px] md:w-[120px]" />
       </div>
-      <h1 className="text-white text-4xl font-bold">TalkSync</h1>
+      <h1 className="text-white text-4xl font-bold">Talkie</h1>
       <div className="text-center">
         <h3 className="text-lg font-semibold text-gray-300">
           Log in or register to continue
@@ -35,4 +35,4 @@ const AuthPage = () => {
   );
 };
 
-export default AuthPage;
+export default AuthLayout;

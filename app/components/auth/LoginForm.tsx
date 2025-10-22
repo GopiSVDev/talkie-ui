@@ -9,99 +9,76 @@ import {
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { toast } from "sonner";
-import { useNavigate } from "react-router";
+import {
+  Form,
+  useActionData,
+  useFetcher,
+  useNavigate,
+  type ActionFunctionArgs,
+} from "react-router";
 import { useAuthStore } from "~/store/useAuthStore";
 import { guest, login } from "~/api/userApi";
 
 const LoginForm = () => {
-  const { setToken, setUser } = useAuthStore();
   const navigate = useNavigate();
+  let fetcher = useFetcher();
+  let errors = fetcher.data?.errors;
 
-  const [formValues, setFormValues] = useState({
-    username: "",
-    password: "",
-  });
-
-  const [errors, setErrors] = useState<{
-    username?: string;
-    password?: string;
-  }>({});
-
-  const [loading, setLoading] = useState(false);
   const [guestLoading, setGuestLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
-    setErrors((prev) => ({ ...prev, [e.target.name]: undefined }));
-    setErrorMsg(null);
-  };
+  // const onSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!validate()) return;
 
-  const validate = () => {
-    const newErrors: typeof errors = {};
-    if (!formValues.username.trim()) {
-      newErrors.username = "Username is required";
-    }
-    if (!formValues.password) {
-      newErrors.password = "Password is required";
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  //   setLoading(true);
+  //   setErrorMsg(null);
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
+  //   try {
+  //     const { accessToken, refreshToken, expiresAt } = await login({
+  //       username: formValues.username,
+  //       password: formValues.password,
+  //     });
 
-    setLoading(true);
-    setErrorMsg(null);
+  //     setToken(token);
+  //     setUser(user);
 
-    try {
-      const { token, user } = await login({
-        username: formValues.username,
-        password: formValues.password,
-      });
+  //     toast.success("Login Successful");
 
-      setToken(token);
-      setUser(user);
+  //     setFormValues({
+  //       username: "",
+  //       password: "",
+  //     });
 
-      toast.success("Login Successful");
+  //     navigate("/");
+  //   } catch (error) {
+  //     if (error instanceof Error)
+  //       toast.error("Username or password is incorrect");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-      setFormValues({
-        username: "",
-        password: "",
-      });
+  // const guestLogin = async () => {
+  //   setGuestLoading(true);
 
-      navigate("/");
-    } catch (error) {
-      if (error instanceof Error)
-        toast.error("Username or password is incorrect");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   try {
+  //     const { token, user } = await guest();
 
-  const guestLogin = async () => {
-    setGuestLoading(true);
+  //     setToken(token);
+  //     setUser(user);
 
-    try {
-      const { token, user } = await guest();
+  //     toast.success("Guest Login Successful");
 
-      setToken(token);
-      setUser(user);
+  //     navigate("/");
+  //   } catch (error) {
+  //     if (error instanceof Error) toast.error("Guest Login Failed");
+  //   } finally {
+  //     setGuestLoading(false);
+  //   }
+  // };
 
-      toast.success("Guest Login Successful");
-
-      navigate("/");
-    } catch (error) {
-      if (error instanceof Error) toast.error("Guest Login Failed");
-    } finally {
-      setGuestLoading(false);
-    }
-  };
+  const isLoading = fetcher.state !== "idle";
 
   return (
     <Card className="bg-[#212121] py-5">
@@ -110,7 +87,12 @@ const LoginForm = () => {
         <CardDescription>Login into your account</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
-        <form className="space-y-6" onSubmit={onSubmit} noValidate>
+        <Form
+          className="space-y-6"
+          noValidate
+          method="post"
+          action="/auth/login"
+        >
           <div>
             <label
               htmlFor="username"
@@ -119,16 +101,13 @@ const LoginForm = () => {
               Username
             </label>
             <Input
-              id="username"
               name="username"
               placeholder="Enter Your Username"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-gray-700 text-white ${
-                errors.username ? "border border-red-500" : ""
+                errors?.username ? "border border-red-500" : ""
               }`}
-              value={formValues.username}
-              onChange={handleChange}
             />
-            {errors.username && (
+            {errors?.username && (
               <p className="text-red-500 text-xs mt-1">{errors.username}</p>
             )}
           </div>
@@ -146,12 +125,10 @@ const LoginForm = () => {
               name="password"
               placeholder="Enter Password"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-gray-700 text-white ${
-                errors.password ? "border border-red-500" : ""
+                errors?.password ? "border border-red-500" : ""
               }`}
-              value={formValues.password}
-              onChange={handleChange}
             />
-            {errors.password && (
+            {errors?.password && (
               <p className="text-red-500 text-xs mt-1">{errors.password}</p>
             )}
           </div>
@@ -163,20 +140,20 @@ const LoginForm = () => {
           <Button
             type="submit"
             className="w-full cursor-pointer text-white bg-blue-600 hover:bg-blue-700"
-            disabled={loading}
+            disabled={isLoading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {isLoading ? "Logging in..." : "Login"}
           </Button>
 
-          <Button
+          {/* <Button
             onClick={guestLogin}
             type="button"
             className="w-full cursor-pointer text-white bg-purple-600 hover:bg-purple-700"
             disabled={guestLoading}
           >
             {guestLoading ? "Creating Guest Account...." : "Guest Login"}
-          </Button>
-        </form>
+          </Button> */}
+        </Form>
       </CardContent>
     </Card>
   );
