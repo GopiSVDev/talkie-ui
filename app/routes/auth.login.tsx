@@ -8,8 +8,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const username = formData.get("username") as string;
   const password = formData.get("password") as string;
 
-  console.log(username, password);
-
   const errors: { [key: string]: string } = {};
 
   if (!username.trim()) {
@@ -24,7 +22,21 @@ export async function action({ request }: ActionFunctionArgs) {
     return data({ errors }, { status: 400 });
   }
 
-  return redirect("/");
+  try {
+    const { accessToken, refreshToken, expiresAt } = await login({
+      username,
+      password,
+    });
+
+    return redirect("/");
+  } catch (error) {
+    return data(
+      {
+        errors: { general: "Username or password is incorrect" },
+      },
+      { status: 400 }
+    );
+  }
 }
 
 export default function LoginRoute() {

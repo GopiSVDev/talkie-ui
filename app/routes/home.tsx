@@ -1,6 +1,7 @@
 import { useAuthStore } from "~/store/useAuthStore";
 import type { Route } from "./+types/home";
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -11,10 +12,13 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   const { isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
 
-  if (!isAuthenticated) {
-    return <Navigate to="/auth/login" replace />;
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/auth/login", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   return <>LOGGED IN</>;
 }

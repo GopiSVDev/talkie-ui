@@ -14,71 +14,22 @@ import {
   useActionData,
   useFetcher,
   useNavigate,
+  useNavigation,
   type ActionFunctionArgs,
 } from "react-router";
 import { useAuthStore } from "~/store/useAuthStore";
 import { guest, login } from "~/api/userApi";
 
 const LoginForm = () => {
-  const navigate = useNavigate();
+  const actionData = useActionData();
+  const navigation = useNavigation();
   let fetcher = useFetcher();
-  let errors = fetcher.data?.errors;
+
+  let errors = actionData?.errors;
 
   const [guestLoading, setGuestLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // const onSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (!validate()) return;
-
-  //   setLoading(true);
-  //   setErrorMsg(null);
-
-  //   try {
-  //     const { accessToken, refreshToken, expiresAt } = await login({
-  //       username: formValues.username,
-  //       password: formValues.password,
-  //     });
-
-  //     setToken(token);
-  //     setUser(user);
-
-  //     toast.success("Login Successful");
-
-  //     setFormValues({
-  //       username: "",
-  //       password: "",
-  //     });
-
-  //     navigate("/");
-  //   } catch (error) {
-  //     if (error instanceof Error)
-  //       toast.error("Username or password is incorrect");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const guestLogin = async () => {
-  //   setGuestLoading(true);
-
-  //   try {
-  //     const { token, user } = await guest();
-
-  //     setToken(token);
-  //     setUser(user);
-
-  //     toast.success("Guest Login Successful");
-
-  //     navigate("/");
-  //   } catch (error) {
-  //     if (error instanceof Error) toast.error("Guest Login Failed");
-  //   } finally {
-  //     setGuestLoading(false);
-  //   }
-  // };
-
-  const isLoading = fetcher.state !== "idle";
+  const isLoading = navigation.state === "submitting";
 
   return (
     <Card className="bg-[#212121] py-5">
@@ -133,8 +84,8 @@ const LoginForm = () => {
             )}
           </div>
 
-          {errorMsg && (
-            <p className="text-red-600 text-sm text-center">{errorMsg}</p>
+          {errors?.general && (
+            <p className="text-red-600 text-sm text-center">{errors.general}</p>
           )}
 
           <Button
