@@ -1,24 +1,12 @@
-import { useAuthStore } from "~/store/useAuthStore";
-import type { Route } from "./+types/home";
-import { useNavigate } from "react-router";
-import { useEffect } from "react";
+import type { LoaderFunctionArgs } from 'react-router';
+import { requireAuth } from '~/services/session.server';
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "Talkie" },
-    { name: "description", content: "Instant messages, real conversations." },
-  ];
+export async function loader({ request }: LoaderFunctionArgs) {
+  return await requireAuth(request);
 }
 
-export default function Home() {
-  const { isAuthenticated } = useAuthStore();
-  const navigate = useNavigate();
+const Home = () => {
+  return <div>Home</div>;
+};
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/auth/login", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
-
-  return <>LOGGED IN</>;
-}
+export default Home;

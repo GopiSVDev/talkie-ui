@@ -1,27 +1,26 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import { toast } from "sonner";
-import { register } from "~/api/userApi";
-import axios from "axios";
-import { useNavigate } from "react-router";
-import { useAuthStore } from "~/store/useAuthStore";
+} from '../ui/card';
+import { Input } from '~/components/ui/input';
+import { Button } from '~/components/ui/button';
+import { toast } from 'sonner';
+
+import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 const RegisterForm = () => {
   const { setToken, setUser } = useAuthStore();
 
   const [formValues, setFormValues] = useState({
-    username: "",
-    displayName: "",
-    password: "",
-    confirmPassword: "",
+    username: '',
+    displayName: '',
+    password: '',
+    confirmPassword: '',
   });
 
   const [errors, setErrors] = useState<{
@@ -47,31 +46,31 @@ const RegisterForm = () => {
     const newErrors: typeof errors = {};
 
     if (!formValues.username.trim()) {
-      newErrors.username = "Username is required";
+      newErrors.username = 'Username is required';
     }
 
     if (formValues.username.length < 4) {
-      newErrors.username = "Username should be atleast 4 characters";
+      newErrors.username = 'Username should be atleast 4 characters';
     }
 
     if (!formValues.displayName.trim()) {
-      newErrors.displayName = "Name is required";
+      newErrors.displayName = 'Name is required';
     }
 
     if (formValues.displayName.length < 4) {
-      newErrors.displayName = "Name should be atleast 4 characters";
+      newErrors.displayName = 'Name should be atleast 4 characters';
     }
 
     if (!formValues.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = 'Password is required';
     }
 
     if (formValues.password.length < 8) {
-      newErrors.password = "Password must be atleast 8 characters";
+      newErrors.password = 'Password must be atleast 8 characters';
     }
 
     if (!formValues.confirmPassword) {
-      newErrors.confirmPassword = "Confirm Password is required";
+      newErrors.confirmPassword = 'Confirm Password is required';
     }
 
     if (
@@ -79,7 +78,7 @@ const RegisterForm = () => {
       formValues.confirmPassword &&
       formValues.password !== formValues.confirmPassword
     ) {
-      newErrors.confirmPassword = "Passwords do not match";
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     setErrors(newErrors);
@@ -103,24 +102,24 @@ const RegisterForm = () => {
       setToken(token);
       setUser(user);
 
-      toast.success("Registration successful!");
+      toast.success('Registration successful!');
 
-      navigate("/");
+      navigate('/');
 
       setFormValues({
-        username: "",
-        displayName: "",
-        password: "",
-        confirmPassword: "",
+        username: '',
+        displayName: '',
+        password: '',
+        confirmPassword: '',
       });
 
       setErrors({});
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const backendMessage = error.response?.data?.message;
-        toast.error(backendMessage || "Registration failed. Try again.");
+        toast.error(backendMessage || 'Registration failed. Try again.');
       } else {
-        toast.error("Registration failed. Try again.");
+        toast.error('Registration failed. Try again.');
       }
     } finally {
       setLoading(false);
@@ -147,7 +146,7 @@ const RegisterForm = () => {
               name="username"
               placeholder="Enter New Username"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-gray-700 text-white ${
-                errors.username ? "border border-red-500" : ""
+                errors.username ? 'border border-red-500' : ''
               }`}
               value={formValues.username}
               onChange={handleChange}
@@ -169,7 +168,7 @@ const RegisterForm = () => {
               name="displayName"
               placeholder="Enter New Name"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-gray-700 text-white ${
-                errors.displayName ? "border border-red-500" : ""
+                errors.displayName ? 'border border-red-500' : ''
               }`}
               value={formValues.displayName}
               onChange={handleChange}
@@ -192,7 +191,7 @@ const RegisterForm = () => {
               name="password"
               placeholder="Enter Password"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-gray-700 text-white ${
-                errors.password ? "border border-red-500" : ""
+                errors.password ? 'border border-red-500' : ''
               }`}
               value={formValues.password}
               onChange={handleChange}
@@ -215,7 +214,7 @@ const RegisterForm = () => {
               name="confirmPassword"
               placeholder="Enter Confirm Password"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-gray-700 text-white ${
-                errors.confirmPassword ? "border border-red-500" : ""
+                errors.confirmPassword ? 'border border-red-500' : ''
               }`}
               value={formValues.confirmPassword}
               onChange={handleChange}
@@ -232,7 +231,7 @@ const RegisterForm = () => {
             className="w-full cursor-pointer text-white bg-blue-600 hover:bg-blue-700"
             disabled={loading}
           >
-            {loading ? "Registering..." : "Register"}
+            {loading ? 'Registering...' : 'Register'}
           </Button>
         </form>
       </CardContent>

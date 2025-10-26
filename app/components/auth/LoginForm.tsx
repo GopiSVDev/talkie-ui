@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import { toast } from "sonner";
+} from '../ui/card';
+import { Input } from '~/components/ui/input';
+import { Button } from '~/components/ui/button';
+import { toast } from 'sonner';
 import {
   Form,
   useActionData,
@@ -16,9 +16,7 @@ import {
   useNavigate,
   useNavigation,
   type ActionFunctionArgs,
-} from "react-router";
-import { useAuthStore } from "~/store/useAuthStore";
-import { guest, login } from "~/api/userApi";
+} from 'react-router';
 
 const LoginForm = () => {
   const actionData = useActionData();
@@ -29,7 +27,7 @@ const LoginForm = () => {
 
   const [guestLoading, setGuestLoading] = useState(false);
 
-  const isLoading = navigation.state === "submitting";
+  const isLoading = navigation.state === 'submitting';
 
   return (
     <Card className="bg-[#212121] py-5">
@@ -55,7 +53,7 @@ const LoginForm = () => {
               name="username"
               placeholder="Enter Your Username"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-gray-700 text-white ${
-                errors?.username ? "border border-red-500" : ""
+                errors?.username ? 'border border-red-500' : ''
               }`}
             />
             {errors?.username && (
@@ -76,7 +74,7 @@ const LoginForm = () => {
               name="password"
               placeholder="Enter Password"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-gray-700 text-white ${
-                errors?.password ? "border border-red-500" : ""
+                errors?.password ? 'border border-red-500' : ''
               }`}
             />
             {errors?.password && (
@@ -93,7 +91,7 @@ const LoginForm = () => {
             className="w-full cursor-pointer text-white bg-blue-600 hover:bg-blue-700"
             disabled={isLoading}
           >
-            {isLoading ? "Logging in..." : "Login"}
+            {isLoading ? 'Logging in...' : 'Login'}
           </Button>
 
           {/* <Button

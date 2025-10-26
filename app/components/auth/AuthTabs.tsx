@@ -1,6 +1,4 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
 import { useEffect } from "react";
 import { motion } from "motion/react";
 import { Outlet, useLocation, useNavigate } from "react-router";

@@ -1,15 +1,11 @@
-import { Loader } from "lucide-react";
-import { useEffect } from "react";
-import AuthTabs from "~/components/auth/AuthTabs";
-import { useAuthStore } from "~/store/useAuthStore";
+import { useEffect } from 'react';
+import AuthTabs from '~/components/auth/AuthTabs';
 
 const AuthLayout = () => {
   useEffect(() => {
-    localStorage.setItem("vite-ui-theme", "dark");
-    document.documentElement.classList.add("dark");
+    localStorage.setItem('vite-ui-theme', 'dark');
+    document.documentElement.classList.add('dark');
   }, []);
-
-  const { isLoading } = useAuthStore();
 
   return (
     <div className="w-full flex flex-col justify-center items-center min-h-screen h-full bg-[#212121] gap-5">
@@ -26,11 +22,7 @@ const AuthLayout = () => {
         </p>
       </div>
 
-      {isLoading ? (
-        <Loader className="animate-spin h-10 w-10 text-gray-500" />
-      ) : (
-        <AuthTabs />
-      )}
+      <AuthTabs />
     </div>
   );
 };
