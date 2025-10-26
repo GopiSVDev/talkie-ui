@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -8,26 +7,21 @@ import {
 } from '../ui/card';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
-import { toast } from 'sonner';
-import {
-  Form,
-  useActionData,
-  useFetcher,
-  useNavigate,
-  useNavigation,
-  type ActionFunctionArgs,
-} from 'react-router';
+import { Form, useActionData, useFetcher, useNavigation } from 'react-router';
 
 const LoginForm = () => {
   const actionData = useActionData();
   const navigation = useNavigation();
-  let fetcher = useFetcher();
 
-  let errors = actionData?.errors;
+  const errors = actionData?.errors;
 
-  const [guestLoading, setGuestLoading] = useState(false);
+  const isLoading =
+    navigation.state === 'submitting' &&
+    navigation.formAction === '/auth/login';
 
-  const isLoading = navigation.state === 'submitting';
+  const guestLoading =
+    navigation.state === 'submitting' &&
+    navigation.formAction === '/auth/guest';
 
   return (
     <Card className="bg-[#212121] py-5">
@@ -36,6 +30,7 @@ const LoginForm = () => {
         <CardDescription>Login into your account</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
+        {/* Form Login */}
         <Form
           className="space-y-6"
           noValidate
@@ -93,15 +88,17 @@ const LoginForm = () => {
           >
             {isLoading ? 'Logging in...' : 'Login'}
           </Button>
+        </Form>
 
-          {/* <Button
-            onClick={guestLogin}
-            type="button"
+        {/* Guest Login */}
+        <Form method="post" action="/auth/guest" className="mt-4">
+          <Button
+            type="submit"
             className="w-full cursor-pointer text-white bg-purple-600 hover:bg-purple-700"
             disabled={guestLoading}
           >
-            {guestLoading ? "Creating Guest Account...." : "Guest Login"}
-          </Button> */}
+            {guestLoading ? 'Creating Guest Account....' : 'Guest Login'}
+          </Button>
         </Form>
       </CardContent>
     </Card>

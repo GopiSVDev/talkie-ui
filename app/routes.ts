@@ -5,5 +5,6 @@ export default [
   route('auth', 'routes/auth.tsx', [
     route('login', 'routes/auth.login.tsx'),
     route('register', 'routes/auth.register.tsx'),
+    route('guest', 'routes/auth.guest.tsx'),
   ]),
 ] satisfies RouteConfig;

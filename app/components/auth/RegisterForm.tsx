@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -9,122 +8,17 @@ import {
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import { toast } from 'sonner';
-
-import axios from 'axios';
-import { useNavigate } from 'react-router';
+import { Form, useActionData, useNavigation } from 'react-router';
 
 const RegisterForm = () => {
-  const { setToken, setUser } = useAuthStore();
+  const actionData = useActionData();
+  const navigation = useNavigation();
 
-  const [formValues, setFormValues] = useState({
-    username: '',
-    displayName: '',
-    password: '',
-    confirmPassword: '',
-  });
+  const errors = actionData?.errors;
 
-  const [errors, setErrors] = useState<{
-    username?: string;
-    displayName?: string;
-    password?: string;
-    confirmPassword?: string;
-  }>({});
-
-  const navigate = useNavigate();
-
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormValues({
-      ...formValues,
-      [e.target.name]: e.target.value,
-    });
-    setErrors((prev) => ({ ...prev, [e.target.name]: undefined }));
-  };
-
-  const validate = () => {
-    const newErrors: typeof errors = {};
-
-    if (!formValues.username.trim()) {
-      newErrors.username = 'Username is required';
-    }
-
-    if (formValues.username.length < 4) {
-      newErrors.username = 'Username should be atleast 4 characters';
-    }
-
-    if (!formValues.displayName.trim()) {
-      newErrors.displayName = 'Name is required';
-    }
-
-    if (formValues.displayName.length < 4) {
-      newErrors.displayName = 'Name should be atleast 4 characters';
-    }
-
-    if (!formValues.password) {
-      newErrors.password = 'Password is required';
-    }
-
-    if (formValues.password.length < 8) {
-      newErrors.password = 'Password must be atleast 8 characters';
-    }
-
-    if (!formValues.confirmPassword) {
-      newErrors.confirmPassword = 'Confirm Password is required';
-    }
-
-    if (
-      formValues.password &&
-      formValues.confirmPassword &&
-      formValues.password !== formValues.confirmPassword
-    ) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validate()) return;
-    setLoading(true);
-
-    try {
-      const { token, user } = await register({
-        username: formValues.username,
-        displayName: formValues.displayName,
-        password: formValues.password,
-      });
-
-      setToken(token);
-      setUser(user);
-
-      toast.success('Registration successful!');
-
-      navigate('/');
-
-      setFormValues({
-        username: '',
-        displayName: '',
-        password: '',
-        confirmPassword: '',
-      });
-
-      setErrors({});
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const backendMessage = error.response?.data?.message;
-        toast.error(backendMessage || 'Registration failed. Try again.');
-      } else {
-        toast.error('Registration failed. Try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const isLoading =
+    navigation.state === 'submitting' &&
+    navigation.formAction === '/auth/register';
 
   return (
     <Card className="bg-[#212121] py-5">
@@ -133,7 +27,12 @@ const RegisterForm = () => {
         <CardDescription>Create a new account</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
-        <form className="space-y-6" onSubmit={onSubmit} noValidate>
+        <Form
+          className="space-y-6"
+          noValidate
+          method="post"
+          action="/auth/register"
+        >
           <div>
             <label
               htmlFor="username"
@@ -142,39 +41,33 @@ const RegisterForm = () => {
               Username
             </label>
             <Input
-              id="username"
               name="username"
               placeholder="Enter New Username"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-gray-700 text-white ${
-                errors.username ? 'border border-red-500' : ''
+                errors?.username ? 'border border-red-500' : ''
               }`}
-              value={formValues.username}
-              onChange={handleChange}
             />
-            {errors.username && (
+            {errors?.username && (
               <p className="text-red-500 text-xs mt-1">{errors.username}</p>
             )}
           </div>
 
           <div>
             <label
-              htmlFor="displayName"
+              htmlFor="name"
               className="uppercase text-xs font-bold text-white"
             >
               Name
             </label>
             <Input
-              id="displayName"
-              name="displayName"
+              name="name"
               placeholder="Enter New Name"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-gray-700 text-white ${
-                errors.displayName ? 'border border-red-500' : ''
+                errors?.name ? 'border border-red-500' : ''
               }`}
-              value={formValues.displayName}
-              onChange={handleChange}
             />
-            {errors.displayName && (
-              <p className="text-red-500 text-xs mt-1">{errors.displayName}</p>
+            {errors?.name && (
+              <p className="text-red-500 text-xs mt-1">{errors?.name}</p>
             )}
           </div>
 
@@ -186,17 +79,14 @@ const RegisterForm = () => {
               Password
             </label>
             <Input
-              id="password"
               type="password"
               name="password"
               placeholder="Enter Password"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-gray-700 text-white ${
-                errors.password ? 'border border-red-500' : ''
+                errors?.password ? 'border border-red-500' : ''
               }`}
-              value={formValues.password}
-              onChange={handleChange}
             />
-            {errors.password && (
+            {errors?.password && (
               <p className="text-red-500 text-xs mt-1">{errors.password}</p>
             )}
           </div>
@@ -209,31 +99,32 @@ const RegisterForm = () => {
               Confirm Password
             </label>
             <Input
-              id="confirmPassword"
               type="password"
               name="confirmPassword"
               placeholder="Enter Confirm Password"
               className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-gray-700 text-white ${
-                errors.confirmPassword ? 'border border-red-500' : ''
+                errors?.confirmPassword ? 'border border-red-500' : ''
               }`}
-              value={formValues.confirmPassword}
-              onChange={handleChange}
             />
-            {errors.confirmPassword && (
+            {errors?.confirmPassword && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.confirmPassword}
               </p>
             )}
           </div>
 
+          {errors?.general && (
+            <p className="text-red-600 text-sm text-center">{errors.general}</p>
+          )}
+
           <Button
             type="submit"
             className="w-full cursor-pointer text-white bg-blue-600 hover:bg-blue-700"
-            disabled={loading}
+            disabled={isLoading}
           >
-            {loading ? 'Registering...' : 'Register'}
+            {isLoading ? 'Registering...' : 'Register'}
           </Button>
-        </form>
+        </Form>
       </CardContent>
     </Card>
   );

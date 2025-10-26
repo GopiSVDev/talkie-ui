@@ -4,6 +4,7 @@ interface RegisterPayload {
   username: string;
   name: string;
   password: string;
+  
 }
 
 interface LoginPayload {
