@@ -12,10 +12,18 @@ export async function action() {
       expiresAt,
       redirectTo: '/',
     });
-  } catch (error) {
+  } catch (error: any) {
+    let errorMessage = 'Failed to create guest account';
+
+    if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (error.response?.data?.error) {
+      errorMessage = error.response.data.error;
+    }
+
     return data(
       {
-        errors: { general: 'Failed to create guest account' },
+        errors: { general: errorMessage },
       },
       { status: 400 },
     );

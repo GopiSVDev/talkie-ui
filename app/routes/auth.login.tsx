@@ -40,10 +40,18 @@ export async function action({ request }: ActionFunctionArgs) {
       expiresAt,
       redirectTo: '/',
     });
-  } catch (error) {
+  } catch (error: any) {
+    let errorMessage = 'Username or password is incorrect';
+
+    if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (error.response?.data?.error) {
+      errorMessage = error.response.data.error;
+    }
+
     return data(
       {
-        errors: { general: 'Username or password is incorrect' },
+        errors: { general: errorMessage },
       },
       { status: 400 },
     );

@@ -1,12 +1,6 @@
-import { useEffect } from 'react';
 import AuthTabs from '~/components/auth/AuthTabs';
 
 const AuthLayout = () => {
-  useEffect(() => {
-    localStorage.setItem('vite-ui-theme', 'dark');
-    document.documentElement.classList.add('dark');
-  }, []);
-
   return (
     <div className="w-full flex flex-col justify-center items-center min-h-screen h-full bg-[#212121] gap-5">
       <div className="mt-3">

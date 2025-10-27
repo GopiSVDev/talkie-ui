@@ -1,4 +1,4 @@
-import { data, redirect, type ActionFunctionArgs } from 'react-router';
+import { data, type ActionFunctionArgs } from 'react-router';
 import { register } from '~/api/auth.api';
 import RegisterForm from '~/components/auth/RegisterForm';
 import { createUserSession } from '~/services/session.server';
