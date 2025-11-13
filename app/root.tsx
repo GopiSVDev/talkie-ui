@@ -5,11 +5,12 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  type LoaderFunctionArgs,
 } from 'react-router';
 
 import type { Route } from './+types/root';
 import './app.css';
+import { ThemeProvider } from './contexts/ThemeContext';
+import ThemeWrapper from './components/ThemeWrapper';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -24,6 +25,13 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+export const meta = () => {
+  return [
+    { title: 'Talkie' },
+    { name: 'description', content: 'Realtime chat app' },
+  ];
+};
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -35,7 +43,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <ThemeProvider>
+          <ThemeWrapper>{children}</ThemeWrapper>
+        </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

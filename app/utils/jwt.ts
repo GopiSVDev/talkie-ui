@@ -6,7 +6,7 @@ export function isTokenExpired(expiresAt?: number | null): boolean {
 export function shouldRefreshToken(expiresAt?: number | null): boolean {
   if (!expiresAt) return true;
 
-  // Refresh 1 hour before
+  // Refresh 1 hour before expiry
   const refreshThreshold = 60 * 60 * 1000;
   return Date.now() >= expiresAt - refreshThreshold;
 }
