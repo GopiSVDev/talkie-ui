@@ -1,5 +1,4 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
-import { useEffect } from 'react';
+import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { motion } from 'motion/react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 

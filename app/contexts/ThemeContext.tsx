@@ -6,8 +6,8 @@ export interface Theme {
 }
 
 const defaultThemes: Theme[] = [
-  { id: 'light', name: 'Light' },
   { id: 'dark', name: 'Dark' },
+  { id: 'light', name: 'Light' },
 ];
 
 interface ThemeContextType {

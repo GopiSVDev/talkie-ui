@@ -7,7 +7,7 @@ import {
 } from '../ui/card';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
-import { Form, useActionData, useFetcher, useNavigation } from 'react-router';
+import { Form, useActionData, useNavigation } from 'react-router';
 
 const LoginForm = () => {
   const actionData = useActionData();
@@ -24,7 +24,7 @@ const LoginForm = () => {
     navigation.formAction === '/auth/guest';
 
   return (
-    <Card className="bg-[#212121] py-5">
+    <Card className="bg-background py-5">
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>Login into your account</CardDescription>
@@ -40,26 +40,26 @@ const LoginForm = () => {
           <div>
             <label
               htmlFor="username"
-              className="uppercase text-xs font-bold text-white"
+              className="uppercase text-xs font-bold text-foreground"
             >
               Username
             </label>
             <Input
               name="username"
               placeholder="Enter Your Username"
-              className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-gray-700 text-white ${
-                errors?.username ? 'border border-red-500' : ''
+              className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-input text-foreground ${
+                errors?.username ? 'border border-destructive' : ''
               }`}
             />
             {errors?.username && (
-              <p className="text-red-500 text-xs mt-1">{errors.username}</p>
+              <p className="text-destructive text-xs mt-1">{errors.username}</p>
             )}
           </div>
 
           <div>
             <label
               htmlFor="password"
-              className="uppercase text-xs font-bold text-white"
+              className="uppercase text-xs font-bold text-foreground"
             >
               Password
             </label>
@@ -68,22 +68,24 @@ const LoginForm = () => {
               type="password"
               name="password"
               placeholder="Enter Password"
-              className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-gray-700 text-white ${
-                errors?.password ? 'border border-red-500' : ''
+              className={`border-0 focus-visible:ring-0 focus-visible:ring-offset-0  bg-input text-foreground ${
+                errors?.password ? 'border border-destructive' : ''
               }`}
             />
             {errors?.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+              <p className="text-destructive text-xs mt-1">{errors.password}</p>
             )}
           </div>
 
           {errors?.general && (
-            <p className="text-red-600 text-sm text-center">{errors.general}</p>
+            <p className="text-destructive text-sm text-center">
+              {errors.general}
+            </p>
           )}
 
           <Button
             type="submit"
-            className="w-full cursor-pointer text-white bg-blue-600 hover:bg-blue-700"
+            className="w-full cursor-pointer text-primary-foreground bg-primary hover:bg-primary/90"
             disabled={isLoading}
           >
             {isLoading ? 'Logging in...' : 'Login'}
@@ -94,7 +96,7 @@ const LoginForm = () => {
         <Form method="post" action="/auth/guest" className="mt-4">
           <Button
             type="submit"
-            className="w-full cursor-pointer text-white bg-purple-600 hover:bg-purple-700"
+            className="w-full cursor-pointer text-secondary-foreground bg-secondary hover:bg-secondary/90"
             disabled={guestLoading}
           >
             {guestLoading ? 'Creating Guest Account....' : 'Guest Login'}
