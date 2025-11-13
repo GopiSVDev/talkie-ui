@@ -24,7 +24,7 @@ const LoginForm = () => {
     navigation.formAction === '/auth/guest';
 
   return (
-    <Card className="bg-background py-5">
+    <Card className="bg-card py-5">
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>Login into your account</CardDescription>

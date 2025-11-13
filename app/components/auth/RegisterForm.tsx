@@ -20,7 +20,7 @@ const RegisterForm = () => {
     navigation.formAction === '/auth/register';
 
   return (
-    <Card className="bg-background py-5">
+    <Card className="bg-card py-5">
       <CardHeader>
         <CardTitle>Register</CardTitle>
         <CardDescription>Create a new account</CardDescription>
