@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { useTheme } from '~/contexts/ThemeContext';
+import { useThemeStore } from '~/stores/ThemeStore';
 
 const ThemeWrapper = ({ children }: { children: React.ReactNode }) => {
-  const { theme } = useTheme();
+  const { theme } = useThemeStore();
 
   useEffect(() => {
     const root = document.documentElement;
-    root.setAttribute('data-theme', theme.id);
+    root.setAttribute('data-theme', theme);
   }, [theme]);
 
   return <>{children}</>;

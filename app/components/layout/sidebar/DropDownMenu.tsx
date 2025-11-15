@@ -5,6 +5,7 @@ import {
   Settings,
   UserRound,
 } from 'lucide-react';
+import { useNavigate } from 'react-router';
 import { Button } from '~/components/ui/button';
 import {
   DropdownMenu,
@@ -15,16 +16,13 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
 import { Switch } from '~/components/ui/switch';
-import { useTheme } from '~/contexts/ThemeContext';
+import { useSidebarStore } from '~/stores/SideBarStore';
+import { THEMES, useThemeStore } from '~/stores/ThemeStore';
 
-export function DropDownMenu({
-  setMode,
-}: {
-  setMode: React.Dispatch<
-    React.SetStateAction<'chats' | 'settings' | 'profile' | 'search'>
-  >;
-}) {
-  const { theme, setTheme } = useTheme();
+export function DropDownMenu() {
+  const navigate = useNavigate();
+  const { theme, setTheme } = useThemeStore();
+  const { setMode } = useSidebarStore();
   const items = [
     {
       name: 'Profile',
@@ -42,14 +40,14 @@ export function DropDownMenu({
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="p-0 shadow-none">
         <Button
-          className="cursor-pointer bg-white hover:bg-[rgba(244,244,245)] dark:bg-[#212121] dark:hover:bg-[rgba(44,44,44)] rounded-4xl p-0"
           variant="secondary"
+          className="cursor-pointer bg-card hover:bg-muted text-foreground rounded-4xl p-0"
         >
           <AlignJustify className="!h-6 !w-6" size={30} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-56 bg-white/70 dark:bg-[#212121]/80 backdrop-blur-sm border-none shadow-md space-y-1.5"
+        className="w-56 bg-popover text-popover-foreground backdrop-blur-sm border-none shadow-md space-y-1.5"
         align="start"
       >
         <DropdownMenuGroup className="font-medium">
@@ -57,25 +55,23 @@ export function DropDownMenu({
             <DropdownMenuItem
               key={name}
               onClick={onClick}
-              className="cursor-pointer gap-2 flex justify-start items-center data-[highlighted]:bg-gray-200/70 dark:hover:bg-black/30"
+              className="cursor-pointer gap-2 flex justify-start items-center data-[highlighted]:bg-accent 
+              data-[highlighted]:text-accent-foreground"
             >
-              <span className="text-black">{Icon}</span>
+              <span>{Icon}</span>
               <span>{name}</span>
             </DropdownMenuItem>
           ))}
 
           <DropdownMenuItem
             onSelect={(e) => e.preventDefault()}
-            className="data-[highlighted]:bg-gray-200/70 dark:hover:bg-black/30"
+            className="data-[highlighted]:bg-accent 
+            data-[highlighted]:text-accent-foreground"
           >
             <div
               className="flex items-center justify-between gap-2 w-full cursor-pointer "
               onClick={() =>
-                setTheme(
-                  theme.id === 'dark'
-                    ? { id: 'light', name: 'Light' }
-                    : { id: 'dark', name: 'Dark' },
-                )
+                setTheme(theme === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK)
               }
             >
               <span className="flex gap-2 items-center">
@@ -93,8 +89,8 @@ export function DropDownMenu({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="font-medium cursor-pointer data-[highlighted]:bg-gray-200/70 dark:hover:bg-black/30"
-          onClick={() => logout()}
+          className="font-medium cursor-pointer data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
+          onClick={() => navigate('/auth/logout')}
         >
           <LogOut />
           Log out
